@@ -21,3 +21,6 @@ class ImportBibitexTest(TestCase):
         self.assertGreater(User.objects.all().count(), 0)
         self.assertGreater(Source.objects.all().count(), 0)
         self.assertGreater(Review.objects.all().count(), 0)
+
+    def test_a_bibtex_from_sciencedirect_doesnt_load_keyworks(self):
+        self.fail('should not happen ever')
