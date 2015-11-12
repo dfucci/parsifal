@@ -2,25 +2,28 @@
 
 from django.test import TestCase
 from django.contrib.auth.models import User
+from django.conf import settings
 
 from parsifal.reviews.models import Review, Source
+from parsifal.reviews.conducting.utils import fix_bibtex_file
 
 
 class ImportBibitexTest(TestCase):
-    fixtures = ['source_initial_data.json',]
-
-    @classmethod
-    def setUpTestData(cls):
-        cls.user = User.objects.create_user(username='john', email='john.doe@parsif.al', password='123')
-        cls.review = Review.objects.create(name='test-review', title='Test Review', description='', author=cls.user, objective='')
 
     def setUp(self):
-        self.client.login(username='john', password='123')
+        path = settings.PROJECT_DIR.child('reviews').child('conducting').child('tests').child('data').child('science.bib')
+        with open(path) as f:
+            self.bibtex_file = f.readlines()
+        self.new_bibtex_file = fix_bibtex_file(self.bibtex_file)
 
-    def test_loaded_fixture(self):
-        self.assertGreater(User.objects.all().count(), 0)
-        self.assertGreater(Source.objects.all().count(), 0)
-        self.assertGreater(Review.objects.all().count(), 0)
+    def test_file_is_correctly_loadded(self):
+        self.assertTrue(len(self.bibtex_file), 0)
 
-    def test_a_bibtex_from_sciencedirect_doesnt_load_keyworks(self):
-        self.fail('should not happen ever')
+    def test_file_contains_text(self):
+        self.assertRegexpMatches(self.bibtex_file[0], r'Jansen20141508')
+
+    def test_if_bibtex_file_is_list(self):
+        self.assertEquals(type(self.bibtex_file), list)
+
+    def test_curly_braces(self):
+        self.assertEquals(self.new_bibtex_file[3], 'volume={"56"},')
