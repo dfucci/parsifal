@@ -30,3 +30,4 @@ class ImportBibitexTest(TestCase):
 
     def test_multiple_import_keywords(self):
         self.assertEquals(self.new_bibtex_file[12], 'keywords={"Software ecosystems health; Open source ecosystems; Software repository mining"},')
+        self.assertFalse("keyword" in self.new_bibtex_file[13])
