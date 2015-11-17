@@ -18,3 +18,13 @@ def fix_bibtex_file(bibtex_file):
         else:
             new_bibtex_file.append(line)
     return new_bibtex_file
+
+def _merge_dup_keywords(bibtex_file):
+    keywords_lines = filter(lambda x: 'keywords={' in x, bibtex_file)
+    keywords = map(lambda x: x.split("=")[1], keywords_lines)
+    cleaned_keywords = [s.replace("}", '') for s in [s.replace("{", '') for s in keywords_lines]
+    final = 'keywords={' + '; '.join(cleaned_keywords) + '};'
+    
+    bibtex_withouth_keywords = [line for line in bibtex_file if "keywords={" not in line]
+    bibtex_file.insert(len(bibtex_file)-1, bibtex_withouth_keywords)
+
