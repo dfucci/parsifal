@@ -23,6 +23,7 @@ from parsifal.reviews.models import *
 from parsifal.reviews.decorators import main_author_required, author_required
 from parsifal.utils.elsevier.client import ElsevierClient
 from parsifal.utils.elsevier.exceptions import *
+from parsifal.reviews.conducting.utils import fix_bibtex_file
 
 
 @author_required
@@ -470,6 +471,8 @@ def _import_articles(request, source, articles):
     else:
         messages.warning(request, u'The bibtex file had no valid entry!')
 
+
+
 @author_required
 @login_required
 @require_POST
@@ -481,6 +484,8 @@ def import_bibtex(request):
     source = Source.objects.get(pk=source_id)
 
     bibtex_file = request.FILES['bibtex']
+    list_bibtex_file = fix_bibtex_file(bibtex_file.readlines())
+    str_bibtex_file = '\r\n'.join(list_bibtex_file)
 
     ext = os.path.splitext(bibtex_file.name)[1]
     valid_extensions = ['.bib', '.bibtex']
@@ -488,8 +493,9 @@ def import_bibtex(request):
     if ext in valid_extensions or bibtex_file.content_type == 'application/x-bibtex':
         parser = BibTexParser()
         parser.customization = convert_to_unicode
-        bib_database = bibtexparser.load(bibtex_file, parser=parser)
+        bib_database = bibtexparser.loads(str_bibtex_file, parser=parser)
         articles = bibtex_to_article_object(bib_database, review, source)
+        import pdb; pdb.set_trace()
         _import_articles(request, source, articles)
     else:
         messages.error(request, u'Invalid file type. Only .bib or .bibtex files are accepted.')
