@@ -26,8 +26,11 @@ class ImportBibitexTest(TestCase):
         self.assertEquals(type(self.bibtex_file), list)
 
     def test_curly_braces(self):
-        self.assertEquals(self.new_bibtex_file[3], 'volume={"56"},')
+        self.assertEquals(self.new_bibtex_file[0][3], 'volume={"56"},')
 
     def test_multiple_import_keywords(self):
-        self.assertEquals(self.new_bibtex_file[12], 'keywords={"Software ecosystems health; Open source ecosystems; Software repository mining"},')
+        self.assertEquals(self.new_bibtex_file[0][13], 'keywords={"Software ecosystems health; Open source ecosystems; Software repository mining"},')
         self.assertFalse("keyword" in self.new_bibtex_file[13])
+
+    def test_new_bibtex_file_length(self):
+        self.assertEquals(len(self.new_bibtex_file), 3)
