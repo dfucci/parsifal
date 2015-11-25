@@ -29,8 +29,9 @@ class ImportBibitexTest(TestCase):
         self.assertEquals(self.new_bibtex_file[0][3], 'volume={"56"},')
 
     def test_multiple_import_keywords(self):
-        self.assertEquals(self.new_bibtex_file[0][13], 'keywords={"Software ecosystems health; Open source ecosystems; Software repository mining"},')
-        self.assertFalse("keyword" in self.new_bibtex_file[13])
+        expected = self.new_bibtex_file[0][13]
+        actual = 'keywords={Software ecosystem health; Open source ecosystems; Software repository mining},'
+        self.assertEquals(expected, actual)
 
     def test_new_bibtex_file_length(self):
         self.assertEquals(len(self.new_bibtex_file), 3)

@@ -31,13 +31,10 @@ def _merge_dup_keywords(bibtex_file_list):
     new_bibtex_file_list = list()
     for bibtex_file in bibtex_file_list:
         keywords_lines = filter(lambda x: 'keywords=' in x, bibtex_file)
-        keywords = map(lambda x: x.split("=")[1], keywords_lines)
+        keywords = map(lambda x: x.split("=")[1].replace('"','').strip(), keywords_lines)
         keywords_str = '; '.join(keywords).replace('{', '').replace('},','')
         keywords_line = 'keywords={' + keywords_str.strip() + '},'
         bibtex_withouth_keywords = [line for line in bibtex_file if "keywords={" not in line]
-        #no_left_brace = [s.replace('{', '') for s in keywords_line]
-        #no_right_brace = [s.replace('}', '') for s in no_left_brace]
         bibtex_withouth_keywords.insert(len(bibtex_withouth_keywords)-1, keywords_line)
-        print bibtex_withouth_keywords
         new_bibtex_file_list.append(bibtex_withouth_keywords)
     return new_bibtex_file_list
