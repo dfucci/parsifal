@@ -33,5 +33,9 @@ class ImportBibitexTest(TestCase):
         actual = 'keywords={Software ecosystem health; Open source ecosystems; Software repository mining},'
         self.assertEquals(expected, actual)
 
+    def test_only_one_keywords_line(self):
+        keywords_lines = filter(lambda x: 'keywords=' in x, self.new_bibtex_file[0])
+        self.assertEquals(len(keywords_lines), 1)
+
     def test_new_bibtex_file_length(self):
         self.assertEquals(len(self.new_bibtex_file), 3)
