@@ -23,7 +23,7 @@ from parsifal.reviews.models import *
 from parsifal.reviews.decorators import main_author_required, author_required
 from parsifal.utils.elsevier.client import ElsevierClient
 from parsifal.utils.elsevier.exceptions import *
-from parsifal.reviews.conducting.utils import fix_bibtex_file
+from parsifal.reviews.conducting.utils import BibitexSanitizer
 
 
 @author_required
@@ -484,8 +484,7 @@ def import_bibtex(request):
     source = Source.objects.get(pk=source_id)
 
     bibtex_file = request.FILES['bibtex']
-    list_bibtex_file = fix_bibtex_file(bibtex_file.readlines())
-    str_bibtex_file = '\r\n'.join(list_bibtex_file)
+    list_bibtex_file = BibitexSanitizer(bibtex_file).sanitize()
 
     ext = os.path.splitext(bibtex_file.name)[1]
     valid_extensions = ['.bib', '.bibtex']
